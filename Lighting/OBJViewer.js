@@ -1,4 +1,3 @@
-// OBJViewer.js (c) 2012 matsuda and itami
 // Vertex shader program
 var VSHADER_SOURCE = 
   'attribute vec4 a_Position;\n' +
@@ -35,8 +34,9 @@ function main() {
         "click",
         function() {
 		// Start reading the OBJ file
-		readOBJFileAdd('cube.obj', gl, model, 60, true);
-		readOBJFileAdd('knight.obj', gl, model, 60, true);
+		//readOBJFileAdd('cube.obj', gl, model, 60, true);
+		readOBJFileAdd('Knight.obj', gl, model, 60, true);
+		//readOBJFileAdd('Banana.obj', gl, model, 60, true);
         });
 
 		
@@ -69,7 +69,6 @@ function main() {
 
   if (program.a_Position < 0 ||  program.a_Normal < 0 || program.a_Color < 0 ||
       !program.u_MvpMatrix || !program.u_NormalMatrix) {
-    console.log('attribute, uniform変数の格納場所の取得に失敗'); 
     return;
   }
 
@@ -82,19 +81,15 @@ function main() {
   
   
 
-  // ビュー投影行列を計算
+  // Set View Projection Matrix
   var viewProjMatrix = new Matrix4();
   viewProjMatrix.setPerspective(30.0, canvas.width/canvas.height, 1.0, 5000.0);
   viewProjMatrix.lookAt(0.0, 500.0, 200.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
   // Start reading the OBJ file
-  readOBJFile('cube.obj', gl, model, 60, true);
   
-  readOBJFileAdd('cube.obj', gl, model, 60, true);
-  readOBJFileAdd('knight.obj', gl, model, 60, true);
-  
-  // Start reading the OBJ file
-  //readOBJFile('cube.obj', gl, model2, 60, true);
+  //readOBJFileAdd('cube.obj', gl, model, 60, true);
+  //readOBJFileAdd('knight.obj', gl, model, 60, true);
 
   var currentAngle = 0.0; // Current rotation angle [degree]
   var isAdvancedDrawMode = true;
@@ -114,12 +109,6 @@ function main() {
 }
 
 
-//-----------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
 
 // Create an buffer object and perform an initial configuration
 function initVertexBuffers(gl, program) {
@@ -131,7 +120,6 @@ function initVertexBuffers(gl, program) {
   if (!o.vertexBuffer || !o.normalBuffer || !o.colorBuffer || !o.indexBuffer) { return null; }
 
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
-  console.log("Returning good");
   return o;
 }
 
@@ -217,7 +205,7 @@ var g_modelMatrix = new Matrix4();
 var g_mvpMatrix = new Matrix4();
 var g_normalMatrix = new Matrix4();
 
-// 描画関数
+// Set up draw functions
 function draw(gl, program, angle, viewProjMatrix, model) {
   if (g_objDoc != null && g_objDoc.isMTLComplete()){ // OBJ and all MTLs are available
     g_drawingInfo = onReadComplete(gl, model, g_objDoc);
@@ -227,11 +215,11 @@ function draw(gl, program, angle, viewProjMatrix, model) {
   {
 	console.log("objDoc problem");  
   }
-  if (!g_drawingInfo) return;   // モデルを読み込み済みか判定
+  if (!g_drawingInfo) return;
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear color and depth buffers
 
-  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // 適当に回転
+  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // Set rotation
   g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
   g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
 
@@ -256,11 +244,11 @@ function drawMulti(gl, program, angle, viewProjMatrix, model) {
     g_drawingInfo = onReadCompleteAdd(gl, model, g_objDocList);
     g_objDocList = null;
   }
-  if (!g_drawingInfo) return;   // モデルを読み込み済みか判定
+  if (!g_drawingInfo) return;   // 
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear color and depth buffers
 
-  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // 適当に回転
+  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // set rotation
   g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
   g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
 
@@ -567,18 +555,18 @@ OBJDoc.prototype.parseFace = function(sp, materialName, vertices, reverse) {
     vertices[face.vIndices[2]].y,
     vertices[face.vIndices[2]].z];
 
-  // 面の法線を計算してnormalに設定
+  // Calculate normals
   var normal = calcNormal(v0, v1, v2);
-  // 法線が正しく求められたか調べる
+  // Check normals
   if (normal == null) {
-    if (face.vIndices.length >= 4) { // 面が四角形なら別の3点の組み合わせで法線計算
+    if (face.vIndices.length >= 4) { 
       var v3 = [
         vertices[face.vIndices[3]].x,
         vertices[face.vIndices[3]].y,
         vertices[face.vIndices[3]].z];
       normal = calcNormal(v1, v2, v3);
     }
-    if(normal == null){         // 法線が求められなかったのでY軸方向の法線とする
+    if(normal == null){        
       normal = [0.0, 1.0, 0.0];
     }
   }
