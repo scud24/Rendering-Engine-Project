@@ -1,0 +1,11 @@
+{
+  "name": "Lighting",
+  "version": "1.0.0",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^1.0.3",
+    "grunt-cli": "^1.3.2",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-jsdoc": "^2.3.0"
+  }
+}

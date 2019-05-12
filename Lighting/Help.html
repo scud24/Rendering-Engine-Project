@@ -1,0 +1,289 @@
+<!-- @author Zachary Wartell -->
+<!-- @version 1.x-2 -->
+<!DOCTYPE html><html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>ITCS 3120 3D Transforms and Lighting - Help</title>
+    <style type="text/css">
+
+            /*   Shell Code Output  */
+            .File_Name
+            {
+                font-family: "Courier", monospace;
+            }
+
+            /*   Code Examples (put in 1x1 table) 
+            table.Hide_Code_Example:target
+            {
+                width: 400px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 20px 13px 20px;
+                border-radius: 10px;
+                background-color: black;
+            }
+            */
+
+            /*   Code Examples are put in small 1x1 table */
+            table.Code_Example
+            {
+                width: 100%;
+                background-color: black;
+            }
+
+            /*  Code Example Expand style when displaying at full height, instead of with scroll bar
+            */
+            table.Code_Example_Expand > tbody > tr > td > div
+            {
+                width: 100%;
+                height: 100% !important;
+                /* overflow-y: scroll; */
+            }            
+
+            /*  Code Example Table Cell that contains expand button
+            */
+            table.Code_Example > tbody > tr > td:first-child
+            {
+                vertical-align:text-top;
+                text-align : left;
+                width: 25px;
+                background-color: transparent;
+                padding:0;
+                margin:0;
+            }            
+
+            /* Code Example Expand style when displaying code in compact, scrollable mode.               
+            */
+            table.Code_Example > tbody > tr > td > div
+            {
+                width: 100%;
+                overflow-y: scroll;
+            }
+
+            /*   Shell Code Input */
+            code.Shell_Code_Input
+            {
+                font-family: "Courier", monospace;
+                color: white;
+            }
+
+            /*   Shell Code Output  */
+            code.Shell_Code_Output
+            {
+                font-family: "Courier", monospace;
+                color: lightgreen;
+            }
+
+            /*   Shell Code Output  */
+            code.Shell_Code_Prompt
+            {
+                font-family: "Courier", monospace;
+                color: cyan;
+            }
+            
+            /*  User Input Required
+            */
+            .User_Input
+            {
+                background-color : grey;
+                font-style: italic;
+                color : black;
+                text-decoration: underline;
+                text-decoration-style: dotted;
+            }
+
+            span.File_Name
+            {
+                font-family: Courier, monospace;
+            }
+
+            span.Function_Name
+            {
+                font-family: Courier, monospace;
+            }            
+
+            /*   Comments in Shell Code
+            */
+            span.Shell_Code_Comment
+            {
+                font-family: Courier, monospace;
+                text-align: center;
+                color: pink;
+                background-color: grey;
+                font-style: italic;
+                font-weight : bold;
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+
+	    span.Updated_Text
+	    {
+		color : red; 
+		background-color : yellow;
+	    }
+
+            /*   Hierarchical List of Instructions
+            */
+            ol.Instruction
+            {
+                font-size: large;
+                list-style-type: decimal;
+            }
+
+            ol.Instruction > li > ol
+            {
+                font-size: large;
+                list-style-type: lower-alpha;
+            }
+
+            ol.Instruction > li > ol > li > ol
+            {
+                font-size: large;
+                list-style-type: lower-roman;
+            }
+
+            span.Grade_Points
+            {
+                font-weight: bold;
+            }
+            h1.Title, h2.Title, h3.Title
+            {
+                text-align : center
+            }
+        </style>
+  </head>
+  <body>
+    <h1>User Interface</h1>
+    <ul>
+      <li><strong>Mouse Interaction: </strong>Left-click and mouse dragging
+        rotates the view around the world origin.&nbsp;&nbsp; The view always
+        looks at the origin.&nbsp; Left-right motion rotates the view around the
+        world y-axis.&nbsp;&nbsp; Up-down motion rotates the view around the
+        view x-axis.&nbsp; A limit is implemented at the top and bottom to
+        prevent rotating completely through y-axis (i.e. north/south pole).<br>
+      </li>
+      <li><strong>Key Interaction:</strong> The scene contains 1 point source
+        light plus ambient lighting.&nbsp; The light source can be rotated
+        around the world origin (0,0,0) at a fixed distance from the origin
+        using the following keys:<br>
+        <ol class="Instruction">
+          <li>Keys ‘a’ and ‘d’ should rotate around world y-axis.</li>
+          <li>Keys ‘s’ and ‘w’ should rotate around world x-axis.</li>
+          <li>Keys ‘q’ and ‘e’ should rotate around world z-axis.</li>
+        </ol>
+      </li>
+    </ul>
+    <h1>The Project Requirements </h1>
+    <p>The 3D scene contains 96 spheres.&nbsp; They are arranged on the faces of
+      an invisible cube with each face containing 16 spheres arranged in 4 x 4
+      grid.&nbsp;&nbsp; The spheres on each face vary in their material
+      properties in particular ways.</p>
+    <ol class="Instruction">
+      <li><strong>Mouse Interaction: </strong>Left-click and mouse dragging
+        rotates the view around the world origin.&nbsp;&nbsp; The view always
+        looks at the origin.&nbsp; Left-right motion rotates the view around the
+        world y-axis.&nbsp;&nbsp; Up-down motion rotates the view around the
+        view x-axis.&nbsp; A limit is implemented at the top and bottom to
+        prevent rotating completely through y-axis (i.e. north/south pole).<br>
+      </li>
+      <li><strong>Key Interaction:</strong> The scene contains 1 point source
+        light plus ambient lighting.&nbsp; The light source can be rotated
+        around the world origin (0,0,0) at a fixed distance from the origin
+        using the following keys:<br>
+        <ol class="Instruction">
+          <li>Keys ‘a’ and ‘d’ should rotate around world y-axis.</li>
+          <li>Keys ‘s’ and ‘w’ should rotate around world x-axis.</li>
+          <li>Keys ‘q’ and ‘e’ should rotate around world z-axis.</li>
+        </ol>
+      </li>
+      <li><strong>3d Scene:</strong> The 3D scene contains 96 spheres.&nbsp;
+        They are be arranged on the faces of an invisible cube with each face
+        containing 16 spheres arranged in 4 x 4 grid.&nbsp;&nbsp; All spheres
+        are&nbsp;&nbsp; the same size.&nbsp; The spheres on a given face should
+        roughly rest on the invisible cube’s face (see Figure (B)) so spheres on
+        one face do not intersect those on an adjacent face by too much. Spheres
+        will vary in their material properties.&nbsp; Some of these properties
+        are set in the requirements below.&nbsp; You can choose the remaining
+        aspects of the material properties.<br>
+        <ol>
+          <li><strong>Front Face</strong> – the 4 x 4 spheres’ material
+            properties must be as follows:<br>
+            <ol>
+              <li>zero specular reflection</li>
+              <li>zero diffuse reflection</li>
+              <li>varying ambient reflection.&nbsp; <br>
+              </li>
+            </ol>
+            The ambient reflection coefficient should vary from 0 to 1 as you
+            move across the 4 columns of spheres.&nbsp;&nbsp; The each row
+            should differ in what common base color the spheres in that
+            row.&nbsp;&nbsp; The color choice is up to the student.<br>
+          </li>
+          <li><strong>Right Face</strong> – the 4 x 4 spheres’ material
+            properties are as follows:<br>
+            <ol>
+              <li>zero specular reflection</li>
+              <li>zero ambient reflection&nbsp;</li>
+              <li>varying diffuse reflection. </li>
+            </ol>
+            The diffuse reflection coefficient should vary from 0 to 1 as you
+            move across the 4 columns of spheres.&nbsp;&nbsp; The each set of
+            spheres in a given row share a common base color but different rows
+            have a different base color.&nbsp;&nbsp; The color choice is up to
+            the student.</li>
+          <li><strong>Back Face </strong>- the 4 x 4 spheres’ material
+            properties are as follows:<br>
+            <ol>
+              <li>no specular reflection</li>
+              <li>varying ambient reflection</li>
+              <li>varying diffuse reflection.&nbsp;</li>
+            </ol>
+            The diffuse reflection coefficient should vary from 0 to 1 as you
+            move across the 4 columns of spheres. The ambient reflection
+            coefficient should vary from 0 to 1 as you move up the 4 rows of
+            spheres.&nbsp;&nbsp; All 16 spheres should use the same common base
+            color.&nbsp; (Otherwise too many visual properties are varying and
+            it is hard to understand what is changing).</li>
+          <li><strong>Bottom Face </strong>- the 4 x 4 spheres’ material
+            properties are as follows:<br>
+            <ol>
+              <li>a fixed, non-zero amount of ambient reflection&nbsp;</li>
+              <li>a fixed, non-zero amount of diffuse reflection&nbsp;</li>
+              <li>varying amount of specular reflection. <br>
+              </li>
+            </ol>
+            The specular reflection coefficient should vary from 0 to 1 as you
+            move across the 4 columns of spheres. The specular exponent
+            coefficient should vary from 0 to 1 as you move up across different
+            rows of spheres.&nbsp;&nbsp; All spheres should use the same common
+            base color.&nbsp; (The color choice is up to the student).&nbsp;
+            Choose a fixed ambient and diffuse reflection amount so that the
+            specular highlights and there variations are visible.<br>
+          </li>
+          <li><strong>Left Face&nbsp; </strong>- the 4 x 4 spheres’ material
+            properties are as follows:<br>
+            <ol>
+              <li>a fixed amount of ambient reflection</li>
+              <li>fixed amount of diffuse reflection</li>
+              <li>no specular reflection&nbsp;</li>
+              <li>varying emission coefficients.&nbsp;</li>
+            </ol>
+            The student can choice whatever the colors.&nbsp; At least 4 of the
+            spheres must emit their own light. <br>
+          </li>
+          <li><strong>Top Face– </strong>the 4 x 4 spheres’ material properties
+            are as follows:<br>
+            <ol>
+              <li>The student can vary material properties in way desired
+                (color, diffuse, specular, emission, etc.).</li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+    <h3></h3>
+    <h1>Pedagogy</h1>
+    <p>More information can be found at <a href="https://webpages.uncc.edu/%7Ezwartell/ITCS%204120/current/ITCS%204120%20-%20Wartell.html"
+        target="_blank">https://webpages.uncc.edu/~zwartell/ITCS%204120/current/ITCS%204120%20-%20Wartell.html</a></p>
+  </body>
+</html>
