@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OBJ Viewer</title>
+  </head>
+
+  <body onload="main()">
+    <canvas id="webgl" width="400" height="400">
+      Please use a browser that supports "canvas"      
+    </canvas>
+	File name: <input id = "filename" type="text" name="filename"><br>
+	<button id = "LoadButton" style="margin-bottom:10px;margin-top:10px;height:40px; width:100px">Load Object</button><br>
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
+    <script src="OBJViewer.js"></script>
+    <script src="Mat2.js"></script>
+    <script src="Mat3.js"></script>
+    <script src="Mat4.js"></script>
+    <script src="Mat4Stack.js"></script>
+    <script src="Interaction.js"></script>
+    <script src="CubeFaceMaterials.js"></script>
+    <script src="Renderable2D.js"></script>
+    <script src="Renderable3D.js"></script>
+    <script src="CoordinateSystem.js"></script>
+  </body>
+</html>
