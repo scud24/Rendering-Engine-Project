@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ITCS 3120 - 3D Transforms and Lighting</title>
+  </head>
+
+  <body onload="main()">
+    <h1 id="App_Title">3D Transforms and Lighting</h1>
+
+    <table>
+      <tbody>
+      <!-- add button to open "help" page -->
+      <tr>
+        <td><button onclick="window.open('./help.html');" style="margin-bottom:10px;margin-top:10px;height:40px; width:100px">Help</button></td>
+        <td>
+          <div>
+            <input type="checkbox" id="AutoRotate" name="AutoRotate" checked>
+            <label for="AutoRotate">Auto Rotate</label>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <canvas id="webgl" width="800" height="800">
+      Please use a browser that supports "canvas"
+    </canvas>
+
+    <!-- load WebGL utitility code -->
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
+    <script src="../lib/uncc_webgl_utils/uncc_webgl_utils.js"></script>
+
+    <!-- load project code -->
+    <script src="SOLUTION.js"></script>
+    <script src="version.js"></script>
+    <script src="Mat2.js"></script>
+    <script src="Mat3.js"></script>
+    <script src="Mat4.js"></script>
+    <script src="Mat4Stack.js"></script>
+    <script src="Interaction.js"></script>
+    <script src="CubeFaceMaterials.js"></script>
+    <script src="Sphere.js"></script>
+    <script src="Renderable2D.js"></script>
+    <script src="Renderable3D.js"></script>
+    <script src="Lighting.js"></script>
+  </body>
+</html>
