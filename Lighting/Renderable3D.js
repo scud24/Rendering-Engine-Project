@@ -479,8 +479,8 @@ class TriSphere extends LitRenderable3D {
         this.vertices = [[0,0,0]]; 
 	    this.indices = [[0,0,0]];;
 		generate_trisphere(20,this.vertices, this.indices);
-		console.log("indices", this.indices);
-		console.log("verts ", this.vertices);
+		//console.log("indices", this.indices);
+		//console.log("verts ", this.vertices);
 		
 		
         // create normals (actually for a box these should _not_ be done per vertex, but done per face instead
@@ -607,6 +607,9 @@ class TriSphere extends LitRenderable3D {
 	
 	
 	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * @author
@@ -686,16 +689,16 @@ class Object3D extends LitRenderable3D {
         // update vertex buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
         // copy vertex data into ARRAY_BUFFER
-        gl.bufferData(gl.ARRAY_BUFFER, flatten(this.vertices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
 
         // update normal buffer
         gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
         // copy vertex data into ARRAY_BUFFER
-        gl.bufferData(gl.ARRAY_BUFFER, flatten(this.normals), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, this.normals, gl.STATIC_DRAW);
 
         // update index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices.flat(1)), gl.STATIC_DRAW);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
     }
 
     /** @author Zachary Wartell
@@ -754,17 +757,17 @@ class Object3D extends LitRenderable3D {
 
         // bind index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-
+		this.indexBuffer.type = gl.UNSIGNED_BYTE;
         /*
          draw primitives
 
          ZJW: Note, I use TRIANGLE_FAN for the LitBox. For your Sphere class it may be simpler to just use TRIANGLES.
          The choice is yours.  For the Curious:  The most performance optimal choice would be TRIANGLE_STRIP.
          */
-        for (let i=0;i<this.indices.length;i++)
-		{ 
-            gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_SHORT, i*3*2);
-		}
+        //for (let i=0;i<this.indices.length;i++)
+		//{ 
+            gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
+		//}
 
 	}
 }

@@ -154,7 +154,7 @@ function generate_trisphere(divisions,positions, indices) {
      The easiest approach is to create the indices assuming rendering will be done with GL_TRIANGLES.
      */
 	 
-		console.log("trisphere generate");
+		//console.log("trisphere generate");
 		//console.log(positions);
 		/*
          *  Initialize JS arrays with vertices attributes
@@ -226,7 +226,7 @@ function generate_triangleStripSphere(divisions,positions, indices, stripLengths
 
      The easiest approach is to create the indices assuming rendering will be done with GL_TRIANGLES.
      */
-		console.log("stripsphere generate");
+		//console.log("stripsphere generate");
 		
 		/*
          *  Initialize JS arrays with vertices attributes
@@ -302,8 +302,8 @@ function generate_triangleStripSphere(divisions,positions, indices, stripLengths
 			//console.log(indices[j].length);
 			stripLengths[j]=indices[j].length;
 		}
-		console.log("vertices len, indices len, stripLengths len");
-		console.log(positions.length);
-		console.log(indices.length);
-		console.log(stripLengths.length);
+		//console.log("vertices len, indices len, stripLengths len");
+		//console.log(positions.length);
+		//console.log(indices.length);
+		//console.log(stripLengths.length);
 }		

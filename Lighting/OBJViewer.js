@@ -1,6 +1,6 @@
 // OBJViewer.js (c) 2012 matsuda and itami
 // Vertex shader program
-var VSHADER_SOURCE = 
+var VSHADER_SOURCE2 = 
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Color;\n' +
   'attribute vec4 a_Normal;\n' +
@@ -16,7 +16,7 @@ var VSHADER_SOURCE =
   '}\n';
 
 // Fragment shader program
-var FSHADER_SOURCE =
+var FSHADER_SOURCE2 =
   '#ifdef GL_ES\n' +
   'precision mediump float;\n' +
   '#endif\n' +
@@ -24,7 +24,7 @@ var FSHADER_SOURCE =
   'void main() {\n' +
   '  gl_FragColor = v_Color;\n' +
   '}\n';
-
+/*
 function main() {
 	
   // Retrieve <canvas> element
@@ -35,8 +35,8 @@ function main() {
         "click",
         function() {
 		// Start reading the OBJ file
-		readOBJFileAdd('cube.obj', gl, model, 60, true);
-		readOBJFileAdd('knight.obj', gl, model, 60, true);
+		//readOBJFileAdd('cube.obj', gl, model, 60, true);
+		//readOBJFileAdd('knight.obj', gl, model, 60, true);
         });
 
 		
@@ -88,38 +88,143 @@ function main() {
   viewProjMatrix.lookAt(0.0, 500.0, 200.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
   // Start reading the OBJ file
-  readOBJFile('cube.obj', gl, model, 60, true);
+  //readOBJFile('cube.obj', gl, model, 60, true);
   
-  readOBJFileAdd('cube.obj', gl, model, 60, true);
-  readOBJFileAdd('knight.obj', gl, model, 60, true);
+  //readOBJFileAdd('cube.obj', gl, model, 60, true);
+  //readOBJFileAdd('knight.obj', gl, model, 60, true);
+  
+
+  var testObject = ReadObject3DFromFile('knight.obj', gl, model, 60, true);
+  if(testObject == null)
+  {
+	console.log("Error loading object from file");
+	return;
+  }
   
   // Start reading the OBJ file
   //readOBJFile('cube.obj', gl, model2, 60, true);
 
+  ObjectDraw(gl, gl.program, currentAngle, viewProjMatrix, model);
   var currentAngle = 0.0; // Current rotation angle [degree]
-  var isAdvancedDrawMode = true;
+  var drawMode = 1;
   var tick = function() {   // Start drawing
 	currentAngle = animate(currentAngle); // Update current rotation angle
-	if(isAdvancedDrawMode)	  
+	if(drawMode == 0)	  
 	{		  
 		drawMulti(gl, gl.program, currentAngle, viewProjMatrix, model);
 	}
+	else if (drawMode == 1)
+	{
+		testObject.render();
+	}	
 	else
 	{
 		draw(gl, gl.program, currentAngle, viewProjMatrix, model);
-	}	
+	}
 	requestAnimationFrame(tick, canvas);
   };
   tick();
 }
 
-
+*/
 //-----------------------------------------------------------------------------------------------------------------------------------
 
 
+function GetObjectFromDoc(objDoc)
+{
+    var drawingInfo = objDoc.getDrawingInfo()
+	var tempObject = new Object3D();
+	tempObject.vertices = drawingInfo.vertices;
+	tempObject.indices = drawingInfo.indices;
+	tempObject.normals = drawingInfo.normals;
+	return tempObject;
+}
 
 
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+function ReadObject3DFromFile(fileName, gl, scale, reverse)
+{
+  console.log("ReadObject3DFromFile start");
+  var request = new XMLHttpRequest();
 
+  request.onreadystatechange = function() {
+    if (request.readyState === 4 && request.status !== 404) {
+      var tempObject = onReadObject3DFromFile(request.responseText, fileName, gl, scale, reverse);
+	  console.log("call onReadObject3DFromFile" + ", " + filename + ", " + gl + ", " + scale + ", " + reverse)
+	  return tempObject;
+    }
+  }
+  request.open('GET', fileName, true); // Create a request to acquire the file
+  request.send();  
+  return null;
+}	
+function onReadObject3DFromFile(fileString, filename, gl, scale, reverse)	
+{
+	console.log("onReadObject3DFromFile start");
+	var objDoc = new OBJDoc(filename);  // Create a OBJDoc object
+	var result = objDoc.parse(fileString, scale, reverse); // Parse the file
+	if (!result) {
+		console.log("OBJ file parsing error.");
+		return null;
+	}
+	
+	if (objDoc != null && objDoc.isMTLComplete()){ // OBJ and all MTLs are available
+		
+		var drawingInfo = objDoc.getDrawingInfo();
+		
+		var object3d = new Object3D();
+		object3d.vertices = drawingInfo.vertices;
+		object3d.indices = drawingInfo.indices;
+		object3d.normals = drawingInfo.normals;
+		
+		
+		return object3d
+	}
+	else
+	{
+		console.log("objDoc problem in read to object");  
+	}
+	return null;
+}
+
+
+function ObjectDraw(gl, program, angle, viewProjMatrix, model)
+{
+	console.log("ObjectDraw");
+  if (g_objDoc != null && g_objDoc.isMTLComplete()){ // OBJ and all MTLs are available
+    g_drawingInfo = onReadComplete(gl, model, g_objDoc);
+    g_objDoc = null;
+  }
+  else
+  {
+	console.log("objDoc problem");  
+  }
+  if (!g_drawingInfo) return null;   // モデルを読み込み済みか判定
+
+  /*gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear color and depth buffers
+
+  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // 適当に回転
+  g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+  g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
+
+  // Calculate the normal transformation matrix and pass it to u_NormalMatrix
+  g_normalMatrix.setInverseOf(g_modelMatrix);
+  g_normalMatrix.transpose();
+  gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
+
+  // Calculate the model view project matrix and pass it to u_MvpMatrix
+  g_mvpMatrix.set(viewProjMatrix);
+  g_mvpMatrix.multiply(g_modelMatrix);
+  gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
+
+  // Draw
+  gl.drawElements(gl.TRIANGLES, g_drawingInfo.indices.length, gl.UNSIGNED_SHORT, 0);*/
+  return g_drawingInfo;
+}
+
+//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
 
 // Create an buffer object and perform an initial configuration
 function initVertexBuffers(gl, program) {
@@ -131,7 +236,7 @@ function initVertexBuffers(gl, program) {
   if (!o.vertexBuffer || !o.normalBuffer || !o.colorBuffer || !o.indexBuffer) { return null; }
 
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
-  console.log("Returning good");
+  console.log("VertexBuffer initialized");
   return o;
 }
 
@@ -191,6 +296,7 @@ function onReadOBJFile(fileString, fileName, gl, o, scale, reverse) {
     console.log("OBJ file parsing error.");
     return;
   }
+  console.log("file read: " + filename);
   g_objDoc = objDoc;
 }
 
@@ -207,8 +313,6 @@ function onReadOBJFileAdd(fileString, fileName, gl, o, scale, reverse) {
   }
   g_objDocList.push(objDoc);
 }
-
-
 
 
 
@@ -346,7 +450,7 @@ function onReadCompleteAdd(gl, model, objDocList) {
 
 
 
-var ANGLE_STEP = 30;   // The increments of rotation angle (degrees)
+//var ANGLE_STEP = 30;   // The increments of rotation angle (degrees)
 
 var last = Date.now(); // Last time that this function was called
 function animate(angle) {
@@ -365,6 +469,7 @@ function animate(angle) {
 // OBJDoc object
 // Constructor
 var OBJDoc = function(fileName) {
+  console.log("OBJDoc constructor start");
   this.fileName = fileName;
   this.mtls = new Array(0);      // Initialize the property for MTL
   this.objects = new Array(0);   // Initialize the property for Object

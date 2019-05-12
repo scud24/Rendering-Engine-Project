@@ -144,16 +144,60 @@ function main() {
     }
 
     const litShader3D = new LitShader3D(gl, VSHADER_SOURCE, FSHADER_SOURCE, true);
-    const litBox = new LitBox_Beta(litShader3D);
-	const litSphere = new Sphere(litShader3D);
-	const litSphere2 = new Sphere(litShader3D);
+    //const litBox = new LitBox_Beta(litShader3D);
+	//const litSphere = new Sphere(litShader3D);
+	//const litSphere2 = new Sphere(litShader3D);
 	const litTriSphere = new TriSphere(litShader3D);
-	const litStripSphere = new TriangleStripSphere(litShader3D);
-	const litStripSphere2 = new TriangleStripSphere(litShader3D);
-	const litStripSphere3 = new TriangleStripSphere(litShader3D);
-	const testPyramid = new Test_Pyramid(litShader3D);
+	const testObject = new Object3D(litShader3D);
+	//const litStripSphere = new TriangleStripSphere(litShader3D);
+	//const litStripSphere2 = new TriangleStripSphere(litShader3D);
+	//const litStripSphere3 = new TriangleStripSphere(litShader3D);
+	//const testPyramid = new Test_Pyramid(litShader3D);
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	var request = new XMLHttpRequest();
+	var fileReady=false;
+	var doc = new OBJDoc("cube.obj");
+	request.onreadystatechange = function() {
+    if (request.readyState === 4 && request.status !== 404) {
+		
+			console.log(doc.parse(request.response, 60, true));
+			console.log(doc.vertices);
+			var drawingInfo = doc.getDrawingInfo();
+			console.log(drawingInfo);
+			if(drawingInfo != null)
+			{
+				console.log("Drawinginfo: ", drawingInfo.vertices);
+				testObject.vertices = drawingInfo.vertices;
+				testObject.indices = drawingInfo.indices;
+				testObject.normals = drawingInfo.normals;
+				console.log("testObject verts: ", testObject.vertices);
+				console.log("testObject indices: ", testObject.indices);
+				console.log("testObject normals ", testObject.normals);
+				console.log("trisphere verts: ", litTriSphere.vertices);
+				console.log("trisphere indices: ", litTriSphere.indices);
+				console.log("trisphere normals: ", litTriSphere.normals);
+				
+				testObject.render();
+			}
+		}
+	}
+	request.open('GET', doc.fileName, true); // Create a request to acquire the file
+	request.send();   
+	
+	
 	
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	
+	
+	
+	
+	
+	
     // Set the clear color and enable the depth test
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
@@ -300,9 +344,9 @@ function main() {
              */
             //litBox.render();
             //litSphere.render();
-			//litStripSphere.render();
-			//modelView3DStack.translate([0,0.5,0]);
-            //litTriSphere.render();
+			//testObject.render();
+			modelView3DStack.translate([0,0.5,0]);
+            litTriSphere.render();
 			//litStripSphere.render();
 			//testPyramid.render();
 			
