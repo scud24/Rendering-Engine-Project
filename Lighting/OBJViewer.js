@@ -24,6 +24,17 @@ var FSHADER_SOURCE =
   '  gl_FragColor = v_Color;\n' +
   '}\n';
 
+	function radToDeg(r) {
+		return r * 180 / Math.PI;
+	}
+
+	function degToRad(d) {
+		return d * Math.PI / 180;
+	}
+	var cameraAngleRadians = degToRad(-360);
+	var positionArray = new Array();
+	var isAdvancedDrawMode = true;
+  
 function main() {
 	
   // Retrieve <canvas> element
@@ -34,14 +45,55 @@ function main() {
         "click",
         function() {
 		// Start reading the OBJ file
-		//readOBJFileAdd('cube.obj', gl, model, 60, true);
+		readOBJFileAdd('cube.obj', gl, model, 30, true);
 		readOBJFileAdd('Knight.obj', gl, model, 60, true);
 		//readOBJFileAdd('Banana.obj', gl, model, 60, true);
         });
 
+	document.addEventListener("keydown", function (event){
+		if (event.defaultPrevented) {
+			return; // Do nothing if the event was already processed
+		}
+				
+		  switch (event.key) {
+			case "ArrowRight": 
+					console.log("arrow keyR down");
+					  cameraAngleRadians += degToRad(5);
+			  break;
+			case "ArrowLeft": 
+					console.log("arrow keyL down");
+					  cameraAngleRadians -= degToRad(5);
+			  break;
+			default:
+			  return; // Quit when this doesn't handle the key event.
+		  }
+
+		  // Cancel the default action to avoid it being handled twice
+		  event.preventDefault();
+		}, true);
 		
 		
 		
+	document.addEventListener('keyup', function (event){
+		if (event.defaultPrevented) {
+			return; // Do nothing if the event was already processed
+		}
+				
+		  switch (event.key) {
+			case "ArrowRight": 
+					console.log("arrow key up");
+			  break;
+			default:
+			  return; // Quit when this doesn't handle the key event.
+		  }
+
+		  // Cancel the default action to avoid it being handled twice
+		  event.preventDefault();
+		}, true);
+		
+
+
+  
   // Get the rendering context for WebGL
   var gl = getWebGLContext(canvas);
   if (!gl) {
@@ -83,7 +135,7 @@ function main() {
 
   // Set View Projection Matrix
   var viewProjMatrix = new Matrix4();
-  viewProjMatrix.setPerspective(30.0, canvas.width/canvas.height, 1.0, 5000.0);
+  viewProjMatrix.setPerspective(60.0, canvas.width/canvas.height, 1.0, 5000.0);
   viewProjMatrix.lookAt(0.0, 500.0, 200.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
   // Start reading the OBJ file
@@ -92,18 +144,19 @@ function main() {
   //readOBJFileAdd('knight.obj', gl, model, 60, true);
 
   var currentAngle = 0.0; // Current rotation angle [degree]
-  var isAdvancedDrawMode = true;
+
   var tick = function() {   // Start drawing
 	currentAngle = animate(currentAngle); // Update current rotation angle
 	if(isAdvancedDrawMode)	  
 	{		  
 		drawMulti(gl, gl.program, currentAngle, viewProjMatrix, model);
-	}
+	}/*
 	else
 	{
 		draw(gl, gl.program, currentAngle, viewProjMatrix, model);
-	}	
+	}*/	
 	requestAnimationFrame(tick, canvas);
+	positionArray.push(cameraAngleRadians);
   };
   tick();
 }
@@ -219,9 +272,9 @@ function draw(gl, program, angle, viewProjMatrix, model) {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear color and depth buffers
 
-  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // Set rotation
-  g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
-  g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
+  //g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // Set rotation
+  //g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+  //g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
 
   // Calculate the normal transformation matrix and pass it to u_NormalMatrix
   g_normalMatrix.setInverseOf(g_modelMatrix);
@@ -238,8 +291,8 @@ function draw(gl, program, angle, viewProjMatrix, model) {
 }
 
 function drawMulti(gl, program, angle, viewProjMatrix, model) {
-	
-  console.log("drawMulti");
+
+  //console.log("drawMulti");
   if (g_objDocList != null && g_objDocList.length > 0 && g_objDocList[0] != null && g_objDocList[0].isMTLComplete()){ // OBJ and all MTLs are available
     g_drawingInfo = onReadCompleteAdd(gl, model, g_objDocList);
     g_objDocList = null;
@@ -248,22 +301,53 @@ function drawMulti(gl, program, angle, viewProjMatrix, model) {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear color and depth buffers
 
-  g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // set rotation
-  g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
-  g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
+  //g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // set rotation
+  //g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+  //g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
 
+  
+	
+	var radius = 100;
+	// Use matrix math to compute a position on a circle where
+    // the camera is
+    var cameraMatrix = new Matrix4();
+	cameraMatrix.setRotate(radToDeg(cameraAngleRadians), 0.0, 1.0, 0.0);
+	var temp = new Matrix4()
+	temp.setTranslate(0, 0, radius * 1.5)
+    cameraMatrix.multiply(temp);
+    // Get the camera's position from the matrix we computed
+    var cameraPosition = [cameraMatrix.elements[12], cameraMatrix.elements[13], cameraMatrix.elements[14]];
+
+    var up = [0, 1, 0];
+	
+    // Compute the camera's matrix using look at.	
+	var arr = m4.lookAt(cameraPosition, [radius, 0, 0], up);
+    cameraMatrix.lookAt(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8]);
+	
+    // Make a view matrix from the camera matrix
+    var viewMatrix = new Matrix4() 
+	viewMatrix.setInverseOf(cameraMatrix);
+	
+    // Compute a view projection matrix
+	var viewProjectionMatrix = new Matrix4();
+	viewProjectionMatrix.set(viewProjMatrix);
+	viewProjectionMatrix.multiply(viewMatrix);
+	
+	console.log(viewProjMatrix)
+  
   // Calculate the normal transformation matrix and pass it to u_NormalMatrix
   g_normalMatrix.setInverseOf(g_modelMatrix);
   g_normalMatrix.transpose();
   gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
 
   // Calculate the model view project matrix and pass it to u_MvpMatrix
-  g_mvpMatrix.set(viewProjMatrix);
+  g_mvpMatrix.set(viewProjectionMatrix);
   g_mvpMatrix.multiply(g_modelMatrix);
   gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
 
   // Draw
   gl.drawElements(gl.TRIANGLES, g_drawingInfo.indices.length, gl.UNSIGNED_SHORT, 0);
+
 }
 
 
@@ -905,4 +989,107 @@ class Camera{
 		M.lookAt(position.x, position.y, position.z, targetx, targety, targetz, 0, 1, 0);
 		return M
 	}
+}
+
+function normalize(v) {
+  var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  // make sure we don't divide by 0.
+  if (length > 0.00001) {
+    return [v[0] / length, v[1] / length, v[2] / length];
+  } else {
+    return [0, 0, 0];
+  }
+}
+function subtractVectors(a, b) {
+  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+}
+
+function cross(a, b) {
+  return [a[1] * b[2] - a[2] * b[1],
+          a[2] * b[0] - a[0] * b[2],
+          a[0] * b[1] - a[1] * b[0]];
+}
+
+
+var m4 = {
+	lookAt: function(cameraPosition, target, up) {
+    var zAxis = normalize(
+        subtractVectors(cameraPosition, target));
+    var xAxis = normalize(cross(up, zAxis));
+    var yAxis = normalize(cross(zAxis, xAxis));
+	/*
+	console.log("inm4")
+	console.log(cameraPosition)
+	console.log(target)
+	console.log(up)
+	*/
+	 return [
+       xAxis[0], xAxis[1], xAxis[2], 0,
+       yAxis[0], yAxis[1], yAxis[2], 0,
+       zAxis[0], zAxis[1], zAxis[2], 0,
+       cameraPosition[0],
+       cameraPosition[1],
+       cameraPosition[2],
+       1,];
+  },
+}
+
+
+function playBack(){
+	isAdvancedDrawMode = false;
+	while(positionArray.length>0){
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);  // Clear color and depth buffers
+
+  //g_modelMatrix.setRotate(angle, 1.0, 0.0, 0.0); // set rotation
+  //g_modelMatrix.rotate(angle, 0.0, 1.0, 0.0);
+  //g_modelMatrix.rotate(angle, 0.0, 0.0, 1.0);
+
+  
+	
+	var radius = 100;
+	// Use matrix math to compute a position on a circle where
+    // the camera is
+    var cameraMatrix = new Matrix4();
+	cameraMatrix.setRotate(radToDeg(positionArray.pop()), 0.0, 1.0, 0.0);
+	var temp = new Matrix4()
+	temp.setTranslate(0, 0, radius * 1.5)
+    cameraMatrix.multiply(temp);
+    // Get the camera's position from the matrix we computed
+    var cameraPosition = [cameraMatrix.elements[12], cameraMatrix.elements[13], cameraMatrix.elements[14]];
+
+    var up = [0, 1, 0];
+	
+    // Compute the camera's matrix using look at.	
+	var arr = m4.lookAt(cameraPosition, [radius, 0, 0], up);
+    cameraMatrix.lookAt(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8]);
+	
+    // Make a view matrix from the camera matrix
+    var viewMatrix = new Matrix4() 
+	viewMatrix.setInverseOf(cameraMatrix);
+	
+    // Compute a view projection matrix
+	var viewProjectionMatrix = new Matrix4();
+	viewProjectionMatrix.set(viewProjMatrix);
+	viewProjectionMatrix.multiply(viewMatrix);
+	
+	console.log(viewProjMatrix)
+  
+  // Calculate the normal transformation matrix and pass it to u_NormalMatrix
+  g_normalMatrix.setInverseOf(g_modelMatrix);
+  g_normalMatrix.transpose();
+  gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
+
+  // Calculate the model view project matrix and pass it to u_MvpMatrix
+  g_mvpMatrix.set(viewProjectionMatrix);
+  g_mvpMatrix.multiply(g_modelMatrix);
+  gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
+
+  // Draw
+  gl.drawElements(gl.TRIANGLES, g_drawingInfo.indices.length, gl.UNSIGNED_SHORT, 0);
+	}
+	
+	isAdvancedDrawMode = true;
+	
+	
+	
 }
