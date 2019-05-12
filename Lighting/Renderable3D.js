@@ -698,7 +698,11 @@ class Object3D extends LitRenderable3D {
 
         // update index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+		console.log("indices to bind: ", this.indices);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
+		console.log("buffer size: ",gl.getBufferParameter(gl.ELEMENT_ARRAY_BUFFER, gl.BUFFER_SIZE));
+		this.indexBuffer.num = this.indices.length;
+		//this.indexBuffer.type = gl.UNSIGNED_BYTE;
     }
 
     /** @author Zachary Wartell
@@ -757,7 +761,6 @@ class Object3D extends LitRenderable3D {
 
         // bind index buffer
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-		this.indexBuffer.type = gl.UNSIGNED_BYTE;
         /*
          draw primitives
 
@@ -766,6 +769,9 @@ class Object3D extends LitRenderable3D {
          */
         //for (let i=0;i<this.indices.length;i++)
 		//{ 
+			//console.log("indices: ",this.indices);
+			//console.log("i length: ", this.indices.length);
+		    //console.log("buffer size: ",gl.getBufferParameter(gl.ELEMENT_ARRAY_BUFFER, gl.BUFFER_SIZE));
             gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
 		//}
 

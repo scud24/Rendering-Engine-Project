@@ -51,8 +51,8 @@ function main() {
   viewProjMatrix.lookAt(0.0, 500.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
   // Start reading the OBJ file
-  readOBJFile('cube.obj', gl, myModel[0], 20, true);
-  readOBJFile('XYZ_Blocks.obj', gl, myModel[1], 40, true);
+  readOBJFile('XYZ_Blocks.obj', gl, myModel[0], 20, true);
+  readOBJFile('tricube.obj', gl, myModel[1], 40, true);
 
   var currentAngle = 0.0; // Current rotation angle [degree]
   var tick = function() {   // Start drawing
@@ -122,7 +122,7 @@ function draw(gl, program, angle, x, viewProjMatrix, model ) {
   initAttributeVariable(gl, program.a_Normal,   model.normalBuffer);   // Normal
   initAttributeVariable(gl, program.a_Color,    model.colorBuffer);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, model.indexBuffer);  // Bind indices
-
+  //console.log(model.numIndices);
   // Draw
   gl.drawElements(gl.TRIANGLES, model.numIndices, gl.UNSIGNED_SHORT, 0);
 }
@@ -143,7 +143,7 @@ function onReadComplete(gl, model, program, objDoc) {
   model.vertexBuffer = initArrayBufferForLaterUse(gl, drawingInfo.vertices, 3, gl.FLOAT);
   model.normalBuffer = initArrayBufferForLaterUse(gl, drawingInfo.normals, 3, gl.FLOAT);
   model.colorBuffer  = initArrayBufferForLaterUse(gl, drawingInfo.colors, 4, gl.FLOAT);
-
+  console.log(drawingInfo.indices);
   model.indexBuffer = initElementArrayBufferForLaterUse(gl, drawingInfo.indices, gl.UNSIGNED_BYTE);
 
   if (!model.vertexBuffer ||

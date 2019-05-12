@@ -157,17 +157,18 @@ function main() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	var request = new XMLHttpRequest();
 	var fileReady=false;
-	var doc = new OBJDoc("cube.obj");
+	var doc = new OBJDoc("tricube.obj");
 	request.onreadystatechange = function() {
     if (request.readyState === 4 && request.status !== 404) {
 		
-			console.log(doc.parse(request.response, 60, true));
+			console.log(doc.parse(request.response, 1, true));
 			console.log(doc.vertices);
 			var drawingInfo = doc.getDrawingInfo();
-			console.log(drawingInfo);
+			console.log(doc.objects[0].faces);
 			if(drawingInfo != null)
 			{
-				console.log("Drawinginfo: ", drawingInfo.vertices);
+				console.log("Drawinginfo verts: ", drawingInfo.vertices);
+				console.log("Drawinginfo indices: ", drawingInfo.indices);
 				testObject.vertices = drawingInfo.vertices;
 				testObject.indices = drawingInfo.indices;
 				testObject.normals = drawingInfo.normals;
@@ -177,7 +178,7 @@ function main() {
 				console.log("trisphere verts: ", litTriSphere.vertices);
 				console.log("trisphere indices: ", litTriSphere.indices);
 				console.log("trisphere normals: ", litTriSphere.normals);
-				
+				testObject.updateBuffers()
 				testObject.render();
 			}
 		}
@@ -344,7 +345,7 @@ function main() {
              */
             //litBox.render();
             //litSphere.render();
-			//testObject.render();
+			testObject.render();
 			modelView3DStack.translate([0,0.5,0]);
             litTriSphere.render();
 			//litStripSphere.render();
